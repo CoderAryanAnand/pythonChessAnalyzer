@@ -3,7 +3,9 @@
 import json
 import math
 import os
+import os.path
 from typing import Dict, Any, Union
+import urllib.request
 
 import chess
 import chess.engine
@@ -56,28 +58,31 @@ def opening(game_in_question):
     ply_count = 0
     root_node = game_in_question.parent
     node = game_in_question.end()
-    with open('eco_codes/eco.json', 'r') as eco_file:
-        eco_data = json.load(eco_file)
-        while not node == game_in_question.parent:
-            prev_node = node.parent
+    url = urllib.request.urlopen(
+        "https://raw.githubusercontent.com/CoderAryanAnand/pythonChessAnalyzer/main/chessAnalyzer/eco_codes/eco"
+        ".json")
+    content = url.read()
+    eco_data = json.loads(content)
+    while not node == game_in_question.parent:
+        prev_node = node.parent
 
-            fen = eco_fen(node.board())
-            classification = classify_fen(fen, eco_data)
+        fen = eco_fen(node.board())
+        classification = classify_fen(fen, eco_data)
 
-            if classification["code"] != "":
-                # Add some comments classifying the opening
-                node.comment = "{} {}".format(classification["code"],
-                                              classification["desc"])
-                # Remember this position so we don't analyze the moves
-                # preceding it later
-                root_node = node
-                # Break (don't classify previous positions)
-                break
+        if classification["code"] != "":
+            # Add some comments classifying the opening
+            node.comment = "{} {}".format(classification["code"],
+                                          classification["desc"])
+            # Remember this position so we don't analyze the moves
+            # preceding it later
+            root_node = node
+            # Break (don't classify previous positions)
+            break
 
-            ply_count += 1
-            node = prev_node
+        ply_count += 1
+        node = prev_node
 
-        return node.parent, root_node, ply_count
+    return node.parent, root_node, ply_count
 
 
 def winning_chances(centipawns):
@@ -119,7 +124,10 @@ class AnnotatePosition:
         self.engine = chess.engine.SimpleEngine.popen_uci(self.eng_file)
         self.white_mvs, self.black_mvs, self.black_lpos, self.white_lpos = 0, 0, list(), list()
         self.current_working_directory = cwd
-        os.mkdir(self.current_working_directory + '/Game Report')
+        try:
+            os.mkdir(self.current_working_directory + '/Game Report')
+        except FileExistsError:
+            pass
 
     def get_eval(self, fen: str) -> float:
         """
@@ -156,27 +164,27 @@ class AnnotatePosition:
         else:
             return board.variation_san(result['pv'])
 
-    def create_graph(self, pgn_loc: str, loc: str):
+    def graph(self, pgn_loc: str, loc: str):
         graph(pgn_loc, self.eng_file, location=loc)
 
     def annotate_game(self, pgn_loc: str) -> chess.pgn.Game:
         """
-        Goes through the game_in_question and analyses and annotates it
+        Goes through the game and analyses and annotates it
         """
-        # Read game_in_question and create starting position
+        # Read game and create starting position
         pgn = chess.pgn.read_game(open(pgn_loc))
 
-        # Find out what opening the game_in_question has
+        # Find out what opening the game has
         opening(pgn)
 
-        # Mark the end of the game_in_question
-        pgn.end().comment = "End of game_in_question. " \
-                            "The moves after this one are just telling you how the game_in_question could have gone on."
+        # Mark the end of the game
+        pgn.end().comment = "End of game. " \
+                            "The moves after this one are just telling you how the game could have gone on."
         # Set variables for the loop
         # prev_eva = 0.00  # not needed anymore
         is_opening = True
 
-        # Iterate through the game_in_question
+        # Iterate through the game
         for node in pgn.mainline():
             move = node.move
             board = node.board()
@@ -229,7 +237,7 @@ class AnnotatePosition:
         print(f'\n\n\n{bColors.WARNING}{bColors.BOLD}Use <print(pgn, file=open(pgn_loc, "w"), end="\\n\\n")> '
               f'to add the '
               f'annotations to '
-              f'the game_in_question.\n\n{bColors.END_C}')
+              f'the game.\n\n{bColors.END_C}')
         return pgn
 
     @staticmethod
@@ -240,16 +248,16 @@ class AnnotatePosition:
 
     def game_report(self, pgn_loc: str, annotate=False) -> tuple:
 
-        # Read game_in_question and create starting position
+        # Read game and create starting position
         pgn = chess.pgn.read_game(open(pgn_loc))
 
         board = chess.Board()
 
         opening(pgn)
 
-        # Mark the end of the game_in_question
-        pgn.end().comment = "End of game_in_question. " \
-                            "The moves after this one are just telling you how the game_in_question could have gone on."
+        # Mark the end of the game
+        pgn.end().comment = "End of game. " \
+                            "The moves after this one are just telling you how the game could have gone on."
         # Set variables for the loop
         is_opening = True
         self.white_mvs: Dict[str, Union[int, Any]] = {'Forced move': 0, 'Best move': 0, 'Excellent move': 0,
@@ -259,7 +267,7 @@ class AnnotatePosition:
                                                       'Good move': 0, 'Interesting move': 0, 'Book move': 0,
                                                       'Inaccuracy': 0, 'Mistake': 0, 'Blunder': 0}
 
-        # Iterate through the game_in_question
+        # Iterate through the game
         for node in pgn.mainline():
             move = node.move
             lgl_mvs = len([i for i in board.legal_moves])
@@ -379,7 +387,7 @@ class AnnotatePosition:
                 f.close()
 
             loc = 'Game Report/%s/Graph/Graph of {}.html' % (headers["White"] + " vs " + headers["Black"])
-            self.create_graph(pgn_loc, loc)
+            self.graph(pgn_loc, loc)
         else:
             pass
 

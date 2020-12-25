@@ -9,7 +9,7 @@ def graph(pgn, engine, location):
 
     headers = chess.pgn.read_headers(open(pgn))
 
-    print('Analyzing this game_in_question: ' + headers["Event"] + " | " + headers["White"] +
+    print('Analyzing this game: ' + headers["Event"] + " | " + headers["White"] +
           " - " + headers["Black"] + "  " + headers["Result"] +
           " | " + headers["Date"])
 
@@ -92,7 +92,7 @@ def graph(pgn, engine, location):
     # Iterate through all moves and play them on a board.
     board = act_game.board()
 
-    print('Analyzing game_in_question...')
+    print('Analyzing game...')
 
     for move in act_game.mainline_moves():
         board.push(move)

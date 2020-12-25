@@ -1,4 +1,5 @@
 # Made by Stephen Ryan. Github: stephen70
+import urllib.request
 
 try:
     from Tkinter import *
@@ -24,11 +25,22 @@ if not dataPath.exists():
     os.makedirs(dataPath)
 
 # find icon path
-iconPath = Path(PurePath(BASE_PATH, 'Icons'))
-windowIconPath = Path(PurePath(iconPath, 'CCT.ico'))
-aboutIconPath = Path(PurePath(iconPath, 'about.ico'))
-lbIconPath = Path(PurePath(iconPath, 'leaderboards.ico'))
-gearsIconPath = Path(PurePath(iconPath, 'gears.ico'))
+urllib.request.urlretrieve("https://raw.githubusercontent.com/stephen70/Chess-Coordinate-Trainer/master"
+                           "/Icons/CCT.ico",
+                           "CCT.ico")
+urllib.request.urlretrieve("https://raw.githubusercontent.com/stephen70/Chess-Coordinate-Trainer/master"
+                           "/Icons/about.ico",
+                           "about.ico")
+urllib.request.urlretrieve("https://raw.githubusercontent.com/stephen70/Chess-Coordinate-Trainer/master"
+                           "/Icons/gears.ico",
+                           "gears.ico")
+urllib.request.urlretrieve("https://raw.githubusercontent.com/stephen70/Chess-Coordinate-Trainer/master"
+                           "/Icons/leaderboards.ico",
+                           "leaderboards.ico")
+windowIconPath = Path(PurePath('CCT.ico'))
+aboutIconPath = Path(PurePath('about.ico'))
+lbIconPath = Path(PurePath('leaderboards.ico'))
+gearsIconPath = Path(PurePath('gears.ico'))
 
 # initialise various variables used
 lbValues = []
@@ -234,7 +246,7 @@ startbutton = Button(menuframe, width=14, height=1, command=lambda: start(), tex
 prefbutton = Button(menuframe, width=29, height=1, command=lambda: showoptions(), text="Preferences", bg="gray94")
 lbbutton = Button(menuframe, width=30, height=1, command=lambda: showLB(), text="Leaderboards", bg="gray94")
 aboutbutton = Button(menuframe, width=14, height=1, command=lambda: showAbout(), text="About", bg="gray94")
-exitbutton = Button(menuframe, width=12, height=1, command=sys.exit, text="Exit", bg="gray94")
+exitbutton = Button(menuframe, width=12, height=1, command=lambda: exit(), text="Exit", bg="gray94")
 
 # place them in a grid layout
 startbutton.grid(row=0, column=0)
@@ -261,6 +273,14 @@ scorelabel = Label(top, width=12, height=1, text="Current Score:", anchor="e", b
 bestlabel = Label(top, width=12, height=1, text="Session Best:", anchor="e", bg="Orange")
 timelabel = Label(top, width=8, height=1, text="Time Left:", anchor="e", bg="Orange")
 newRecordLabel = Label(top, width=11, height=1, bg="gray80")
+
+
+def exit():
+    os.remove('CCT.ico')
+    os.remove('about.ico')
+    os.remove('leaderboards.ico')
+    os.remove('gears.ico')
+    sys.exit()
 
 
 # when a new record is obtained, create a flashing "New Record!" label
