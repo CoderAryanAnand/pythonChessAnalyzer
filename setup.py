@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="chessAnalyzer",  # Replace with your own username
-    version="0.0.1",
+    version="0.0.4",
     author="Aryan Anand",
     author_email="aryananand.chess@gmail.com",
     description="Analyses games and positions. Possible to have a Game Report similar to the one from chess.com, "

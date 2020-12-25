@@ -14,9 +14,11 @@ pip install chessAnalyzer
 ## Usage
 
 ```python
-import chessAnalyzer, os
+import os, chessAnalyzer, chessAnalyzer.main
 
-ca = chessAnalyzer.main.AnnotatePosition(0.5, os.cwd(), <engine(optional)>)
+# Always use a string for file paths!
+
+ca = chessAnalyzer.main.AnnotatePosition(0.5, os.getcwd(), <engine file path(string)>)
 
 ca.graph(pgn_loc, end_loc) # creates a graph
 annotated_pgn = ca.annotate_game(pgn_loc) # annotates game
