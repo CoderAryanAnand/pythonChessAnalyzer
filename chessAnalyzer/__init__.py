@@ -4,4 +4,4 @@ __author__ = "Aryan Anand"
 
 __email__ = "aryananand.chess@gmail.com"
 
-__version__ = "0.0.4"
+__version__ = "0.1.0"

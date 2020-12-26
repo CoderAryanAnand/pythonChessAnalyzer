@@ -1,7 +1,6 @@
 # pythonChessAnalyzer 
 
 Analyses games and positions. Possible to have a Game Report similar to the one from chess.com, including graphs.
-Also has a Coordinate trainer(author: [Stephen Ryan](https://github.com/stephen70))
 
 ## Installation
 
@@ -22,7 +21,6 @@ ca = chessAnalyzer.main.AnnotatePosition(0.5, os.getcwd(), <engine file path(str
 
 ca.graph(pgn_loc, end_loc) # creates a graph
 annotated_pgn = ca.annotate_game(pgn_loc) # annotates game
-ca.train_coordinates() # trains coordinates
 white_lost_positions: list, black_lost_positions: list, annotated game: list = ca.game_report(pgn_loc, annotate=True) # gets you a game report(saves graph elsewhere)
 # and more!
 ```
