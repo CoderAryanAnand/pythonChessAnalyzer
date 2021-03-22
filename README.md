@@ -2,6 +2,14 @@
 
 Analyses games and positions. Possible to have a Game Report similar to the one from chess.com, including graphs.
 
+## Requirements
+
+You need chess and plotly(and everything that plotly needs).
+```bash
+pip install chess
+pip install plotly
+```
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pythonChessAnalyzer.
